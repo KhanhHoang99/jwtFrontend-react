@@ -1,9 +1,9 @@
 import React from 'react';
-import "./Login.scss";
+import "./Register.scss";
 import {Link} from "react-router-dom";
 
 
-function Login(props) {
+function Register(props) {
 
     return (
         <div className='login-container'>
@@ -17,23 +17,27 @@ function Login(props) {
                             Khanh high school
                         </div>
                     </div>
-                    <div className='content-right green col-12 col-sm-5'>
+                    <div className='content-right green col-12 col-sm-5 '>
                         <form>
-                            <div class="form-group">
+                            <div class="form-group py-2">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group py-2">
+                                <label for="username">UserName</label>
+                                <input type="username" class="form-control" id="username" placeholder="UserName" />
+                            </div>
+                            <div class="form-group py-2">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" id="password" placeholder="Password" />
                             </div>
                             <hr/>
                             <div className='d-flex justify-content-center'>
-                                <button type="submit" class="btn btn-primary">Login</button>
+                                <button type="submit" class="btn btn-primary">Register</button>
                             </div>
                         </form>
                         <div className='d-flex justify-content-center'>
-                            <Link to="/register">Create an account</Link>
+                            <Link to="/login">you had an account?</Link>
                         </div>
                     </div>
                 </div>
@@ -42,4 +46,4 @@ function Login(props) {
     );
 }
 
-export default Login;
+export default Register;
