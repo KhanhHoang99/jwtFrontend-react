@@ -19,16 +19,16 @@ function Login(props) {
                     </div>
                     <div className='content-right green col-12 col-sm-5'>
                         <form>
-                            <div class="form-group">
+                            <div class="form-group py-2">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group py-2">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" id="password" placeholder="Password" />
                             </div>
                             <hr/>
-                            <div className='d-flex justify-content-center'>
+                            <div className='d-flex justify-content-center py-2'>
                                 <button type="submit" class="btn btn-primary">Login</button>
                             </div>
                         </form>
