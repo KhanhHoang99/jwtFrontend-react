@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import "./Register.scss";
 import {Link} from "react-router-dom";
 import {toast} from 'react-toastify';
+import { registerNewUser } from '../../services/userService';
+import { useHistory } from 'react-router-dom';
 
 function Register(props) {
 
@@ -11,6 +13,17 @@ function Register(props) {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const history = useHistory();
+
+    const defaultValidInput = {
+        isValidEmail: true,
+        isValidPhone: true,
+        isValidPassword: true,
+        isValidConfirmPassword: true,
+    }
+
+    const [objChectInput, setObjChectInput] = useState(defaultValidInput);
+
 
 
     const validateEmail = (email) => {
@@ -22,29 +35,53 @@ function Register(props) {
     };
 
     const isValidInputs = () => {
+        
+        setObjChectInput(defaultValidInput);
+
         if(!email) {
             toast.error("email is required");
+            setObjChectInput({...defaultValidInput, isValidEmail: false});
             return false;
         }
         if(!validateEmail(email)){
+            setObjChectInput({...defaultValidInput, isValidEmail: false});
             toast.error("email is not valid");
         }
         if(!phone) {
+            setObjChectInput({...defaultValidInput, isValidPhone: false});
             toast.error("phone is required");
             return false;
         }
         if(!password) {
+            setObjChectInput({...defaultValidInput, isValidPassword: false});
             toast.error("password is required");
             return false;
         }
         if(password !== confirmPassword) {
+            setObjChectInput({...defaultValidInput, isValidPassword: false});
             toast.error("your password is not the same");
             return false;
         }
+
+        return true;
     }
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
+        
         let check = isValidInputs();
+
+        if(check) {
+            let response = await registerNewUser(email, phone, userName, password)
+            console.log(response);
+            let serverData = response.data;
+            if(+serverData.errorCode === 0){
+                toast.success(serverData.message)
+                history.push('/login');
+            }else{
+                toast.error(serverData.message)
+            }
+        }
+    
     }
 
     return (
@@ -65,7 +102,7 @@ function Register(props) {
                                 <label htmlFor="email">Email</label>
                                 <input 
                                     type="email" 
-                                    className="form-control" 
+                                    className={objChectInput.isValidEmail ? "form-control" : "form-control is-invalid"}
                                     id="email" 
                                     placeholder="Enter email"
                                     value={email}
@@ -87,7 +124,7 @@ function Register(props) {
                                 <label htmlFor="phone">Phone</label>
                                 <input 
                                     type="text" 
-                                    className="form-control" 
+                                    className={objChectInput.isValidPhone ? "form-control" : "form-control is-invalid"}
                                     id="phone" 
                                     placeholder="phone"
                                     value={phone}
@@ -98,7 +135,7 @@ function Register(props) {
                                 <label htmlFor="password">Password</label>
                                 <input 
                                     type="password" 
-                                    className="form-control" 
+                                    className={objChectInput.isValidPassword ? "form-control" : "form-control is-invalid"} 
                                     id="password" 
                                     placeholder="Password"
                                     value={password}
@@ -109,7 +146,7 @@ function Register(props) {
                                 <label htmlFor="confirmPassword">Confirm Password</label>
                                 <input 
                                     type="password" 
-                                    className="form-control" 
+                                    className={objChectInput.isValidConfirmPassword ? "form-control" : "form-control is-invalid"} 
                                     id="confirmPassword" 
                                     placeholder="confirm Password"
                                     value={confirmPassword}

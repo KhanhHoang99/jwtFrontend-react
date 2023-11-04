@@ -1,24 +1,30 @@
 import Nav from "./components/Navigation/Nav";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
-import { Route, Switch } from "react-router-dom";
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect, useState } from "react";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
+
+  const [account, setAccount] = useState({});
+
+  useEffect(() => {
+    let session = sessionStorage.getItem('account');
+    if(session) {
+      setAccount(JSON.parse(session));
+    }
+  }, []);
+
+
   return (
-    <div>
-      <Nav />
-      <Switch>
-        <Route exact path="/">Home Page</Route>
-        <Route path="/About">About page</Route>
-        <Route path="/contact">contact page</Route>
-        <Route path="/login"><Login /></Route>
-        <Route path="/register"><Register /></Route>
-        <Route path="*">
-          <p>404 not Found</p>
-        </Route>
-      </Switch>
+    <>
+      
+      <div className="app-header">
+        <Nav />
+      </div>
+      <div className="app-container">
+        <AppRoutes />
+      </div>
 
       <ToastContainer
           position="top-right"
@@ -33,7 +39,7 @@ function App() {
           theme="light"
       />
 
-    </div>
+    </>
   );
 }
 
