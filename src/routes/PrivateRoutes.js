@@ -18,7 +18,7 @@ function PrivateRoutes(props) {
 
     return (
         <>
-            <Route path={props.path}>{props.component}</Route>
+            <Route path={props.path} component={props.component} />
         </>
     );
 }
