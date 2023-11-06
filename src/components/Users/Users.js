@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import "./Users.scss";
-import {fetchAllUser} from '../../services/userService';
+import {fetchAllUser, deleteUser} from '../../services/userService';
 import ReactPaginate from 'react-paginate';
+import { toast } from 'react-toastify';
+import ModalDeleteUser from '../Modals/ModalDeleteUser';
 
 function Users(props) {
 
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [currentLimit, setCurrentLimit] = useState(1);
+    const [currentLimit, setCurrentLimit] = useState(2);
     const [totalPage, setTotalPage] = useState(1);
+    const [showModal, setShowModal] = useState(false);
+    const [dataModal, setDataModal] = useState({});
+
+    const handleCloseModal = () => setShowModal(false);
+    const handleShowModal = () => setShowModal(true);
 
     const getListUser = async () => {
         try {
@@ -33,6 +40,31 @@ function Users(props) {
         let page = +event.selected + 1;
         setCurrentPage(page)
     };
+
+    const openModal = (user) => {
+        // console.log('check: ', user)
+        setShowModal(true);
+        setDataModal(user)
+    }
+
+    const handleDeleteUser = async (user) => {
+        try {
+            let response = await deleteUser(user.id);
+            console.log("response: " , response.data )
+            if(response &&  response.data && response.data.errorCode === 0) {
+                toast.success(response.data.message);
+                getListUser();
+            }else{
+                toast.error(response.message);
+            }
+            
+        } catch (error) {
+            console.log("Error when delete user: ", error)
+            toast.error("Error when delete user");
+        }
+
+        setShowModal(false);
+    }
 
     return (
         <div className='manage-uers-container container'>
@@ -65,9 +97,9 @@ function Users(props) {
                                 <td>{user.sex ? user.sex : "N/A"}</td>
                                 <td>{user.Group ? user.Group.name : "N/A"}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger">Delete</button>
+                                    <button type="button" className="btn btn-danger" onClick={() => openModal(user)}>Delete</button>
                                     <span>  </span>
-                                    <button type="button" class="btn btn-primary">Edit</button>
+                                    <button type="button" className="btn btn-primary">Edit</button>
                                 </td>
                             </tr>
                         ))}
@@ -101,6 +133,17 @@ function Users(props) {
                     </>
                 }
             </div>
+            <>
+                <ModalDeleteUser
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    handleCloseModal={handleCloseModal}
+                    handleShowModal={handleShowModal}
+                    dataModal={dataModal}
+                    handleDeleteUser={handleDeleteUser}
+
+                />
+            </>
         </div>
     );
 };
