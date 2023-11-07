@@ -4,18 +4,70 @@ import {fetchAllUser, deleteUser} from '../../services/userService';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify';
 import ModalDeleteUser from '../Modals/ModalDeleteUser';
+import ModalEditUser from '../Modals/ModalEditUser';
+import ModalCreateUser from '../Modals/ModalCreateUser';
 
 function Users(props) {
 
     const [listUsers, setListUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [currentLimit, setCurrentLimit] = useState(2);
+    const [currentLimit, setCurrentLimit] = useState(4);
     const [totalPage, setTotalPage] = useState(1);
-    const [showModal, setShowModal] = useState(false);
-    const [dataModal, setDataModal] = useState({});
 
-    const handleCloseModal = () => setShowModal(false);
-    const handleShowModal = () => setShowModal(true);
+    //Model delete
+    const [showModalDelete, setShowModalDelete] = useState(false);
+    const [dataModalDelete, setDataModalDelete] = useState({});
+    const handleCloseModalDelete = () => setShowModalDelete(false);
+    const handleShowModalDelete = () => setShowModalDelete(true);
+
+    const openModalDelete = (user) => {
+        // console.log('check: ', user)
+        setShowModalDelete(true);
+        setDataModalDelete(user)
+    }
+
+    const handleDeleteUser = async (user) => {
+        try {
+            let response = await deleteUser(user.id);
+            console.log("response: " , response.data )
+            if(response &&  response.data && response.data.errorCode === 0) {
+                toast.success(response.data.message);
+                getListUser();
+            }else{
+                toast.error(response.message);
+            }
+            
+        } catch (error) {
+            console.log("Error when delete user: ", error)
+            toast.error("Error when delete user");
+        }
+
+        setShowModalDelete(false);
+    }
+
+
+
+    // Modal Edit
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [dataModalEdit, setDataModalEdit] = useState({});
+    const handleCloseModalEdit = () => setShowModalEdit(false);
+    const handleShowModalEdit = () => setShowModalEdit(true);
+
+    const openModalEdit = (user) => {
+        // console.log('check: ', user)
+        setShowModalEdit(true);
+        setDataModalEdit(user)
+    }
+
+    
+
+    // Modal Create User
+    const [showModalCreate, setShowModalCreate] = useState(false);
+    const handleCloseModalCreate = () => setShowModalCreate(false);
+    const handleShowModalCreate = () => setShowModalCreate(true);
+
+
+
 
     const getListUser = async () => {
         try {
@@ -41,37 +93,19 @@ function Users(props) {
         setCurrentPage(page)
     };
 
-    const openModal = (user) => {
-        // console.log('check: ', user)
-        setShowModal(true);
-        setDataModal(user)
-    }
 
-    const handleDeleteUser = async (user) => {
-        try {
-            let response = await deleteUser(user.id);
-            console.log("response: " , response.data )
-            if(response &&  response.data && response.data.errorCode === 0) {
-                toast.success(response.data.message);
-                getListUser();
-            }else{
-                toast.error(response.message);
-            }
-            
-        } catch (error) {
-            console.log("Error when delete user: ", error)
-            toast.error("Error when delete user");
-        }
-
-        setShowModal(false);
-    }
+    
 
     return (
         <div className='manage-uers-container container'>
            <div className='user-header'>
                 <h3>Table Users</h3>
                 <div className='actions'>
-                        <button>Hello</button>
+                    <button 
+                        type="button" 
+                        className="btn btn-success"
+                        onClick={() => setShowModalCreate(true)}
+                    >Create a new user</button>
                 </div>
            </div>
            <div className='user-body'>
@@ -97,9 +131,9 @@ function Users(props) {
                                 <td>{user.sex ? user.sex : "N/A"}</td>
                                 <td>{user.Group ? user.Group.name : "N/A"}</td>
                                 <td>
-                                    <button type="button" className="btn btn-danger" onClick={() => openModal(user)}>Delete</button>
+                                    <button type="button" className="btn btn-danger" onClick={() => openModalDelete(user)}>Delete</button>
                                     <span>  </span>
-                                    <button type="button" className="btn btn-primary">Edit</button>
+                                    <button type="button" className="btn btn-primary" onClick={() => openModalEdit(user)}>Edit</button>
                                 </td>
                             </tr>
                         ))}
@@ -135,14 +169,30 @@ function Users(props) {
             </div>
             <>
                 <ModalDeleteUser
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    handleCloseModal={handleCloseModal}
-                    handleShowModal={handleShowModal}
-                    dataModal={dataModal}
+                    showModal={showModalDelete}
+                    setShowModal={setShowModalDelete}
+                    handleCloseModal={handleCloseModalDelete}
+                    handleShowModal={handleShowModalDelete}
+                    dataModal={dataModalDelete}
                     handleDeleteUser={handleDeleteUser}
 
                 />
+
+                <ModalEditUser 
+                    showModalEdit={showModalEdit}
+                    setShowModalEdit={setShowModalEdit}
+                    handleCloseModalEdit={handleCloseModalEdit}
+                    handleShowModalEdit={handleShowModalEdit}
+                    dataModal={dataModalEdit}
+                />
+
+                <ModalCreateUser
+                    showModalCreate={showModalCreate}
+                    setShowModalEdit={setShowModalCreate}
+                    handleCloseModalCreate={handleCloseModalCreate}
+                    handleShowModalCreate={handleShowModalCreate}
+                />
+                
             </>
         </div>
     );

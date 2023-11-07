@@ -15,7 +15,7 @@ function ModalDeleteUser(props) {
                 <Modal.Body>Are you sure want to delete {props.dataModal.email}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.handleCloseModal}>
-                        No
+                        Cancel
                     </Button>
                     <Button variant="primary" onClick={() => {props.handleDeleteUser(props.dataModal)}}>
                         Yes
