@@ -2,29 +2,27 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from 'react';
-import { createNewUser, fetchGroup } from '../../services/userService';
+import { updateCurrentUser, fetchGroup } from '../../services/userService';
 import { toast } from 'react-toastify';
 import _, { create } from "lodash"
 
 function ModalEditUser(props) {
 
     const [userGroups, setUserGroups] = useState([]);
+    
 
     const defaultUserData = {
-        email: '',
-        phone: '',
-        username: '',
-        password: '',
-        address: '',
-        sex: '',
-        group: ''
+        phone: props.dataModal.phone || '',
+        username: props.dataModal.username || '',
+        address: props.dataModal.address || '',
+        sex: props.dataModal.sex || '',
+        group: props.dataModal.groupId || '',
+        userId: props.dataModal.id || '',
     }
 
     const validInputsDefault = {
-        email: true,
         phone: true,
         username: true,
-        password: true,
         address: true,
         sex: true,
         group: true
@@ -33,9 +31,16 @@ function ModalEditUser(props) {
     const [userData, setUserData] = useState(defaultUserData);
     const [validInput, setValidInput] = useState(validInputsDefault);
 
+     useEffect(() => {
+        setUserData(defaultUserData);
+    }, [props.dataModal]); 
+    
+
     useEffect(() => {
+        setUserData(defaultUserData);
         getGroups();
     }, [])
+
 
     const getGroups = async() => {
         let res = await fetchGroup();
@@ -56,7 +61,7 @@ function ModalEditUser(props) {
 
         setValidInput(validInputsDefault)
 
-        let arr = ['email', 'phone', 'password', 'group'];
+        let arr = ['phone', 'username', 'group', 'address', 'sex'];
         let check = true;
         for(let i = 0;i < arr.length; i++){
             if(!userData[arr[i]]){
@@ -75,15 +80,18 @@ function ModalEditUser(props) {
     }
 
     const handleConfirmUser = async () => {
+
         let check = checkValidateInputs();
         if(check === true) {
-            let res = await createNewUser(userData);
-            console.log('check respone: ', res)
+            let res = await updateCurrentUser(userData);
 
-            if(res.data && res.data.errCode === 0) {
+            if(res.data && res.data.errorCode === 0) {
                 // close modal
+                props.handleCloseModalEdit();
+                props.getListUser();
+                toast.success(res.data.message)
             }else {
-                toast.error(`Error create user...`)
+                toast.error(`Error when update user`)
             }
         }
     }
@@ -96,27 +104,13 @@ function ModalEditUser(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="row">
-                        <div className="col-md-6">
-                            <div className="form-group py-2">
-                                <label htmlFor="email">Email address</label>
-                                <input 
-                                    type="email" 
-                                    value={userData.email}
-                                    className={validInput.email ? 'form-control' : 'form-control is-invalid'} 
-                                    id="email" 
-                                    name="email" 
-                                    placeholder="Enter email"
-                                    onChange={(e) => handleOnchangeInput(e.target.value, 'email')}
-                                    required 
-                                />
-                            </div>
-                        </div>
+                       
                         <div className="col-md-6">
                             <div className="form-group py-2">
                                 <label htmlFor="username">Username</label>
                                 <input 
                                     type="text" 
-                                    value={userData.name} 
+                                    value={userData.username} 
                                     className={validInput.username ? 'form-control' : 'form-control is-invalid'} 
                                     id="username" 
                                     name="username" 
@@ -131,7 +125,7 @@ function ModalEditUser(props) {
                                 <label htmlFor="address">Address</label>
                                 <input 
                                     type="text" 
-                                    value={userData.address} 
+                                    value={userData.address || ''} 
                                     className={validInput.address ? 'form-control' : 'form-control is-invalid'} 
                                     id="address" 
                                     name="address" 
@@ -146,7 +140,7 @@ function ModalEditUser(props) {
                                 <label htmlFor="phone">Phone</label>
                                 <input 
                                     type="text" 
-                                    value={userData.phone} 
+                                    value={userData.phone || ''} 
                                     className={validInput.phone ? 'form-control' : 'form-control is-invalid'} 
                                     id="phone" 
                                     name="phone" 
@@ -161,6 +155,7 @@ function ModalEditUser(props) {
                             <select 
                                 className="form-select py-2"
                                 onChange={(e) => handleOnchangeInput(e.target.value, 'sex')}
+                                value={userData.sex}
                             >
                                 <option defaultValue value="Male">Male</option>
                                 <option value="Female">Female</option>
@@ -172,6 +167,7 @@ function ModalEditUser(props) {
                             <select 
                                 className="form-select py-2"
                                 onChange={(e) => handleOnchangeInput(e.target.value, 'group')}
+                                value={userData.group}
                             >
                                 {userGroups && userGroups.length > 0 && (
                                     userGroups.map((group) => (
@@ -189,7 +185,7 @@ function ModalEditUser(props) {
                         Cancel
                     </Button>
                     <Button variant="primary" onClick={handleConfirmUser}>
-                        Confirm  
+                        Update 
                     </Button>
                 </Modal.Footer>
             </Modal>

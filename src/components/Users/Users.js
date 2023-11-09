@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./Users.scss";
-import {fetchAllUser, deleteUser} from '../../services/userService';
+import {fetchAllUser, deleteUser, updateCurrentUser} from '../../services/userService';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify';
 import ModalDeleteUser from '../Modals/ModalDeleteUser';
@@ -175,7 +175,6 @@ function Users(props) {
                     handleShowModal={handleShowModalDelete}
                     dataModal={dataModalDelete}
                     handleDeleteUser={handleDeleteUser}
-
                 />
 
                 <ModalEditUser 
@@ -184,6 +183,7 @@ function Users(props) {
                     handleCloseModalEdit={handleCloseModalEdit}
                     handleShowModalEdit={handleShowModalEdit}
                     dataModal={dataModalEdit}
+                    getListUser={getListUser}
                 />
 
                 <ModalCreateUser
@@ -191,6 +191,7 @@ function Users(props) {
                     setShowModalEdit={setShowModalCreate}
                     handleCloseModalCreate={handleCloseModalCreate}
                     handleShowModalCreate={handleShowModalCreate}
+                    getListUser={getListUser}
                 />
                 
             </>
