@@ -51,8 +51,8 @@ function Login(props) {
         
         let response = await loginUser(email, password);
         if(response && response.data) {
-            let serverData = response.data;
-            if(+serverData.errorCode === 0){
+            
+            if(+response.errorCode === 0){
 
                 let data = {
                     isAuthenticated: true,
@@ -61,10 +61,10 @@ function Login(props) {
 
                 sessionStorage.setItem('account', JSON.stringify(data));
 
-                toast.success(serverData.message);
+                toast.success(response.message);
                 history.push('/users');
             }else{
-                toast.error(serverData.message);
+                toast.error(response.message);
             }
         }
 

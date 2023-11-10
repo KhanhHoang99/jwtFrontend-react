@@ -73,9 +73,8 @@ function Users(props) {
         try {
             let response = await fetchAllUser(currentPage, currentLimit);
             if (response && response.data) {
-                // console.log(response.data);
-                setListUsers(response.data.data.userList);
-                setTotalPage(response.data.data.totalPage)
+                setListUsers(response.data.userList);
+                setTotalPage(response.data.totalPage)
             }
         } catch (error) {
             console.error('Error fetching users:', error);
