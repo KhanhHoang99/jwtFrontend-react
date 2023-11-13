@@ -71,14 +71,14 @@ function Register(props) {
         let check = isValidInputs();
 
         if(check) {
-            let response = await registerNewUser(email, phone, userName, password)
-            console.log(response);
-            let serverData = response.data;
-            if(+serverData.errorCode === 0){
-                toast.success(serverData.message)
+
+            let response = await registerNewUser(email, phone, userName, password);
+            
+            if(+response.errorCode === 0){
+                toast.success(response.message)
                 history.push('/login');
             }else{
-                toast.error(serverData.message)
+                toast.error(response.message)
             }
         }
     

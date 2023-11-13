@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import "./Login.scss";
 import {Link} from "react-router-dom";
 import {toast} from 'react-toastify';
 import { loginUser } from '../../services/userService';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
 
 
 
@@ -21,12 +22,9 @@ function Login(props) {
     const [objChectInput, setObjChectInput] = useState(defaultValidInput);
     const history = useHistory();
 
-    useEffect(() => {
-        let session = sessionStorage.getItem('account');
-        if(session) {
-            history.push('/')
-        }
-    }, [])
+
+    const {loginContext} = useContext(UserContext)
+    
 
    
 
@@ -54,12 +52,19 @@ function Login(props) {
             
             if(+response.errorCode === 0){
 
+                let email = response.data.email;
+                let username = response.data.username;
+                let token = response.data.access_token;
+
                 let data = {
                     isAuthenticated: true,
-                    token: 'fake token'
+                    token,
+                    account: {email, username}
                 }
 
-                sessionStorage.setItem('account', JSON.stringify(data));
+                loginContext(data);
+
+                // sessionStorage.setItem('account', JSON.stringify(data));
 
                 toast.success(response.message);
                 history.push('/users');

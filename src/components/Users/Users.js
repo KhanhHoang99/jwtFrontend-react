@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import "./Users.scss";
 import {fetchAllUser, deleteUser, updateCurrentUser} from '../../services/userService';
 import ReactPaginate from 'react-paginate';
@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import ModalDeleteUser from '../Modals/ModalDeleteUser';
 import ModalEditUser from '../Modals/ModalEditUser';
 import ModalCreateUser from '../Modals/ModalCreateUser';
+import { UserContext } from '../../context/UserContext';
 
 function Users(props) {
 
@@ -45,6 +46,8 @@ function Users(props) {
         setShowModalDelete(false);
     }
 
+    const {user} = useContext(UserContext)
+    console.log('usercontex: ', user)
 
 
     // Modal Edit

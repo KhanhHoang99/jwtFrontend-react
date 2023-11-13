@@ -28,10 +28,12 @@ const createNewUser = (userData) => {
     return axios.post(`/user/create`, {...userData});
 }
 
-
 const updateCurrentUser = (userData) => {
     return axios.put(`http://localhost:8080/api/v1/user/update`, {...userData});
 }
 
+const getUserAccount = () => {
+    return axios.get(`/account`);
+}
 
-export {registerNewUser, loginUser, fetchAllUser, deleteUser, fetchGroup, createNewUser, updateCurrentUser}
+export {registerNewUser, loginUser, fetchAllUser, deleteUser, fetchGroup, createNewUser, updateCurrentUser, getUserAccount}
