@@ -6,16 +6,17 @@ const UserContext = createContext(null);
 
 function UserProvider({children}) {
 
-    const [user, setUser] = useState(
-        {
-            isAuthenticated: false,
-            token: false, 
-            account: {}
-        }
-    );
+    const userDefault = {
+        isAuthenticated: false,
+        token: false,
+        isLoading: true,
+        account: {}
+    }
+
+    const [user, setUser] = useState(userDefault);
 
     const loginContext = (userData) => {
-        setUser(userData);
+        setUser({...userData, isLoading: false});
     }
 
     const logoutContext = (name) => {
@@ -26,8 +27,32 @@ function UserProvider({children}) {
     }
 
     const fetchUser = async() => {
-        if(window.location.pathname !== '/'){
-            let data = await getUserAccount();
+         
+        if(window.location.pathname !== '/' || window.location.pathname !== '/login') {
+
+            let response = await getUserAccount();
+
+            if(response && response.errorCode === 0) {
+                let groupWithRoles = response.data.groupWithRoles;
+                let email = response.data.email;
+                let username = response.data.username;
+                let token = response.data.access_token;
+
+                let data = {
+                    isAuthenticated: true,
+                    token, 
+                    account: { groupWithRoles, email, username },
+                    isLoading: false
+                }
+
+                setUser(data);
+
+            }else {
+                setUser({
+                    ...userDefault,
+                    isLoading: false
+                })
+            }
         }
     }
 

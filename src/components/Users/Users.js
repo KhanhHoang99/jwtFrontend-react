@@ -47,7 +47,7 @@ function Users(props) {
     }
 
     const {user} = useContext(UserContext)
-    console.log('usercontex: ', user)
+    // console.log('usercontex: ', user)
 
 
     // Modal Edit

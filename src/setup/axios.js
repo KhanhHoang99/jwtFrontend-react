@@ -37,7 +37,7 @@ instance.interceptors.response.use(function (response) {
       // authentication (token related issues)
       case 401: {
         toast.error("401 you don't permission to access this resource");
-        return Promise.reject(error);
+        return error && error.response.data;
       }
 
       // forbidden (permission related issues)
