@@ -26,6 +26,7 @@ function NavHeader(props) {
                                     <NavLink to="/contact" className='nav-link'>Contact</NavLink>
                                     <NavLink to="/about" className='nav-link'>About</NavLink>
                                     <NavLink to="/users" className='nav-link'>Users</NavLink>
+                                    <NavLink to="/roles" className='nav-link'>Roles</NavLink>
                                 </Nav>
                                 <Nav>
                                     {

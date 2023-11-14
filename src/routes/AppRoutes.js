@@ -4,6 +4,7 @@ import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import Users from "../components/Users/Users";
 import PrivateRoutes from './PrivateRoutes';
+import Role from '../components/Role/Role';
 
 function AppRoutes(props) {
 
@@ -16,6 +17,7 @@ function AppRoutes(props) {
                 <Route exact path="/">Home Page</Route>
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />
+                <Route path="/roles" component={Role} />
                 <Route path="*">
                     <p>404 not Found</p>
                 </Route>
