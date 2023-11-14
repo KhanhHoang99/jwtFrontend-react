@@ -24,4 +24,33 @@
     }
 
 }
+
+.nav-header {
+
+  .header {
+    background-color: #20232a;
+  }
+
+  a, .nav-link {
+    color: white !important;
+    cursor: pointer;
+
+    &:hover {
+      color: #61dafb !important;
+    }
+  }
+
+  .nav-link {
+    &.active {
+      color: #61dafb !important;
+    }
+  }
+
+  .dropdown-menu {
+    a {
+      color: #212529 !important;
+    }
+  }
+
+}
   

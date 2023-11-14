@@ -11,7 +11,7 @@ const instance = axios.create({
 
 //
 
-//   instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+  instance.defaults.headers.common['Authorization'] = `Bearer ${sessionStorage.getItem("jwt")}`;
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {

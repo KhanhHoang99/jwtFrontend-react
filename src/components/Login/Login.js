@@ -64,7 +64,7 @@ function Login(props) {
 
                 loginContext(data);
 
-                // sessionStorage.setItem('account', JSON.stringify(data));
+                sessionStorage.setItem('jwt', token);
 
                 toast.success(response.message);
                 history.push('/users');
