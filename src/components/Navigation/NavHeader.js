@@ -8,10 +8,8 @@ import { Container, Nav, NavDropdown, Navbar } from 'react-bootstrap';
 
 function NavHeader(props) {
 
-    const {user} = useContext(UserContext);
+    const {user, logoutContext} = useContext(UserContext);
     const location = useLocation()
-
-    
 
     if(user  && user.isAuthenticated || location.pathname === '/'){
 
@@ -30,12 +28,19 @@ function NavHeader(props) {
                                     <NavLink to="/users" className='nav-link'>Users</NavLink>
                                 </Nav>
                                 <Nav>
-                                    <Nav.Item className='nav-link' href="#deets">Welcome Khanh</Nav.Item>
-                                    <NavDropdown title="Settings" id="basic-nav-dropdown">
-                                        <NavDropdown.Item href="#action/3.1">Chang Password</NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item href="#action/3.4">Log Out</NavDropdown.Item>
-                                    </NavDropdown>
+                                    {
+                                        user  && user.isAuthenticated ?
+                                        <>
+                                            <Nav.Item className='nav-link'>Welcome {user.account.username}</Nav.Item>
+                                            <NavDropdown title="Settings" id="basic-nav-dropdown">
+                                                <NavDropdown.Item href="#action/3.1">Chang Password</NavDropdown.Item>
+                                                <NavDropdown.Divider />
+                                                <NavDropdown.Item onClick={() => logoutContext()}>Log Out</NavDropdown.Item>
+                                            </NavDropdown>
+                                        </>
+                                        :
+                                        <NavLink className='nav-link' to="/login">Login</NavLink>
+                                    }
                                 </Nav>
                             </Navbar.Collapse>
                         </Container>

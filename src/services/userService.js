@@ -12,6 +12,10 @@ const loginUser = (email, password) => {
             })
 }
 
+const logoutUser = () => {
+    return axios.post('/logout');
+}
+
 const fetchAllUser = (page, limit) => {
     return axios.get(`/user/read?page=${page}&limit=${limit}`);
 }
@@ -36,4 +40,4 @@ const getUserAccount = () => {
     return axios.get(`/account`);
 }
 
-export {registerNewUser, loginUser, fetchAllUser, deleteUser, fetchGroup, createNewUser, updateCurrentUser, getUserAccount}
+export {registerNewUser, loginUser, fetchAllUser, deleteUser, fetchGroup, createNewUser, updateCurrentUser, getUserAccount, logoutUser}

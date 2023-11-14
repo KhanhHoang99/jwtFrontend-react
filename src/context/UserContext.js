@@ -1,10 +1,13 @@
 import React, { useState, createContext, useEffect } from 'react';
-import { getUserAccount } from '../services/userService';
-
+import { getUserAccount, logoutUser } from '../services/userService';
+import { toast } from 'react-toastify';
+import { useHistory  } from 'react-router-dom';
 
 const UserContext = createContext(null);
 
 function UserProvider({children}) {
+
+    const history = useHistory();
 
     const userDefault = {
         isAuthenticated: false,
@@ -19,16 +22,22 @@ function UserProvider({children}) {
         setUser({...userData, isLoading: false});
     }
 
-    const logoutContext = (name) => {
-        setUser((user) => ({
-            name: '',
-            auth: false,
-        }));
+    const logoutContext = async () => {
+
+        let data =  await logoutUser();
+        if(data && +data.errorCode === 0){
+            setUser(() => ({...userDefault, isLoading: false}));
+            sessionStorage.clear();    
+            toast.success('logout success');
+            history.push('/login');
+        }else{
+            toast.error(data.message);
+        }
     }
 
     const fetchUser = async() => {
          
-        if(window.location.pathname !== '/' || window.location.pathname !== '/login') {
+        if(window.location.pathname !== '/' && window.location.pathname !== '/login') {
 
             let response = await getUserAccount();
 
@@ -53,6 +62,8 @@ function UserProvider({children}) {
                     isLoading: false
                 })
             }
+        }else {
+            setUser(() => ({...user, isLoading: false}));
         }
     }
 
