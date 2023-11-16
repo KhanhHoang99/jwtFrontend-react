@@ -4,6 +4,8 @@ import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { createRoles } from '../../services/roleService';
+import TableRole from './TableRole';
+import { useRef } from 'react';
 
 
 function Role(props) {
@@ -11,6 +13,8 @@ function Role(props) {
     const dataChildDefault = {
          url: '', description: '', isValidUrl: true
     }
+
+    const childRef = useRef();
 
     const [ listChilds, setListChilds] = useState({
         child1: dataChildDefault
@@ -79,6 +83,7 @@ function Role(props) {
             let res = await createRoles(data);
             if(res && res.errorCode == 0) {
                 toast.success(res.message)
+                childRef.current.fetListRolesAgain();
                 //loop throug object and clear state
             }
 
@@ -99,11 +104,11 @@ function Role(props) {
     return (
         <div className='role-container'>
             <div className='container'>
-                 <div className='mt-3'>
+                <div className='mt-3'>
                     <div className='title-role'><h4>Add a new role</h4></div>
                     <div className='role-parent'>
                         {
-                             Object.entries(listChilds).map(([key, child], index) => {
+                                Object.entries(listChilds).map(([key, child], index) => {
                                 return (
                                     <div key={`child-${key}`} className='row role-child'>
                                         <div className='col-5 form-group'>
@@ -129,7 +134,10 @@ function Role(props) {
                         }
                         <button type="button" className="btn btn-success" onClick={() => handleSave()}>Success</button>
                     </div>
-                 </div>
+                    <hr></hr>
+                    <div className='title-role'><h4>List Current Roles</h4></div>
+                    <TableRole ref={childRef}/>
+                </div>
             </div>
         </div>
     );
