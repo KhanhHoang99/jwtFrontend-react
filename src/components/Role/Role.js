@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import "../Role/Role.scss";
 import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-toastify';
+import { createRoles } from '../../services/roleService';
 
 
 function Role(props) {
 
+    const dataChildDefault = {
+         url: '', description: '', isValidUrl: true
+    }
+
     const [ listChilds, setListChilds] = useState({
-        child1: {id: 1, url: 'hêllll', description: 'lololo'}
+        child1: dataChildDefault
     })
 
     const handleOnchangeInput = (name, value, key) => {
@@ -15,6 +21,12 @@ function Role(props) {
         let _listChilds = _.cloneDeep(listChilds);
 
         _listChilds[key][name] = value;
+
+        if(value && name === 'url') {
+            _listChilds[key][name] = value;
+            _listChilds[key]['isValidUrl'] = true;
+        }
+
         setListChilds(_listChilds);
 
     }
@@ -23,10 +35,7 @@ function Role(props) {
     const handleAddNewInput = () => {
         let id = uuidv4();
         let _listChilds = _.cloneDeep(listChilds);
-        _listChilds[id] = {
-            url: '',
-            description: ''
-        }
+        _listChilds[id] = dataChildDefault
         setListChilds(_listChilds);
 
     }
@@ -37,6 +46,54 @@ function Role(props) {
         delete _listChilds[key]
         setListChilds(_listChilds);
 
+    }
+
+    const buildDataToPerrsist = () => {
+
+        let _listChilds = _.cloneDeep(listChilds);
+        let result = [];
+
+        Object.entries(_listChilds).map(([key, child], index) => {
+            result.push({
+                url: child.url,
+                description: child.description
+            })
+        });
+
+        return result;
+
+
+    }
+
+    const handleSave = async () => {
+        // console.log(listChilds);
+        let check = true;
+
+        let invalidObj = Object.entries(listChilds).find(([key, child], index) => {
+            return child && !child.url;
+        });
+
+        if(!invalidObj) {
+
+            let data = buildDataToPerrsist();
+            let res = await createRoles(data);
+            if(res && res.errorCode == 0) {
+                toast.success(res.message)
+                //loop throug object and clear state
+            }
+
+        }else {
+            // console.log("invalidObj: ", invalidObj);
+            const key = invalidObj[0];
+            let _listChilds = _.cloneDeep(listChilds);
+            _listChilds[key]['isValidUrl'] = false
+            toast.error('Input Url must not be empty ...!')
+            setListChilds(_listChilds);
+        }
+
+        if(check){
+
+        }
     }
 
     return (
@@ -51,7 +108,11 @@ function Role(props) {
                                     <div key={`child-${key}`} className='row role-child'>
                                         <div className='col-5 form-group'>
                                             <label>URL</label>
-                                            <input type='text' className='form-control' defaultValue={child.url} onChange={(e) => handleOnchangeInput('url', e.target.value, key)}/>
+                                            <input type='text' 
+                                                className={child.isValidUrl ? 'form-control' : 'form-control is-invalid'} 
+                                                defaultValue={child.url} 
+                                                onChange={(e) => handleOnchangeInput('url', e.target.value, key)}
+                                            />
                                         </div>
                                         <div className='col-5 form-group'>
                                             <label>Description</label>
@@ -66,7 +127,7 @@ function Role(props) {
                                 )
                             })
                         }
-                        <button type="button" className="btn btn-success">Success</button>
+                        <button type="button" className="btn btn-success" onClick={() => handleSave()}>Success</button>
                     </div>
                  </div>
             </div>
